@@ -9,6 +9,8 @@ using Microsoft.Extensions.Configuration;
 using System.Threading;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using FunctionAppMovies.Models;
+using Newtonsoft.Json;
 
 namespace FunctionAppMovies
 {
@@ -26,7 +28,7 @@ namespace FunctionAppMovies
             _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer { _configuration["MovieDbBearer"] }");
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-           
+
         }
 
         [FunctionName("GetMovieCastFunction")]
@@ -40,7 +42,7 @@ namespace FunctionAppMovies
 
             var content = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-            return new OkObjectResult(content);
+            return new OkObjectResult(JsonConvert.DeserializeObject<CastSelection>(content));
         }
     }
 }
